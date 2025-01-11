@@ -20,8 +20,8 @@ const ProfileInfo = ({ user, onSave }) => {
     };
 
     return (
-        <div className="profile-info p-6 bg-white shadow-lg rounded-lg border border-gray-200">
-            <h2 className="text-xl font-bold text-center mb-6">User Profile</h2>
+        <div className="profile-info p-6 bg-white shadow-lg min-w-6 rounded-lg border border-gray-200">
+            <h2 className="text-x1 xs:text-sm sm:text-lg font-bold text-center mb-6">User Profile</h2>
             <div className="flex flex-col items-center space-y-4">
                 {/* User Avatar */}
                 <img
