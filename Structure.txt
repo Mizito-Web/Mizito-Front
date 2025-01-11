@@ -1,0 +1,54 @@
+src/
+├── components/               # Reusable components
+│   ├── Layout/               # Layout components (e.g., Navbar, Sidebar, Footer)
+│   │   ├── Navbar.js         # Navigation bar
+│   │   ├── Sidebar.js        # Sidebar navigation
+│   │   └── Footer.js         # Footer
+│   ├── Dashboard/            # Components related to the Dashboard
+│   │   ├── ProjectCard.js    # Individual project card
+│   │   ├── TaskSummary.js    # Task summary component
+│   │   └── ActivityFeed.js   # Activity log feed
+│   ├── Projects/             # Components related to Projects
+│   │   ├── ProjectList.js    # List of projects
+│   │   ├── ProjectDetails.js # Detailed project view
+│   │   ├── AddProjectModal.js# Modal to add a new project
+│   │   └── EditProjectModal.js # Modal to edit an existing project
+│   ├── Tasks/                # Components related to Tasks
+│   │   ├── TaskCard.js       # Task card display
+│   │   ├── TaskList.js       # List of tasks
+│   │   ├── TaskDetails.js    # Task details view
+│   │   ├── AddTaskModal.js   # Modal to add a new task
+│   │   └── EditTaskModal.js  # Modal to edit a task
+│   ├── Chat/                 # Chat related components
+│   │   ├── ChatWindow.js     # Main chat window
+│   │   ├── MessageList.js    # List of messages
+│   │   └── MessageInput.js   # Input field for sending messages
+│   ├── Profile/              # Profile management components
+│   │   ├── ProfileInfo.js    # View profile information
+│   │   ├── EditProfileForm.js # Form to edit profile information
+│   │   ├── ChangePasswordForm.js # Form to change password
+│   │   └── ProfilePage.js    # Main profile page to combine components
+│   └── Utilities/            # Miscellaneous reusable components
+│       ├── Modal.js          # Reusable modal component
+│       ├── Button.js         # Reusable button component
+│       ├── FormInput.js      # Reusable input component
+│       ├── Notification.js   # Notifications or alerts
+│       └── Loader.js         # Loading spinner/indicator
+├── pages/                    # Pages that are mapped to routes
+│   ├── Dashboard.js          # Dashboard page
+│   ├── Projects.js           # Projects overview page
+│   ├── Tasks.js              # Tasks page
+│   ├── Chat.js               # Chat page
+│   ├── Profile.js            # Profile page
+│   └── Login.js              # Login page
+├── services/                 # API services and logic for interacting with the backend
+│   ├── authService.js        # Auth-related API functions (e.g., login, register)
+│   ├── projectService.js     # Project-related API functions (e.g., create, update, fetch)
+│   └── taskService.js        # Task-related API functions
+├── hooks/                    # Custom React hooks
+│   └── useAuth.js            # Hook for managing authentication state
+├── styles/                   # Global styles (CSS or Tailwind)
+│   └── global.css            # Global styles (or use Tailwind config)
+├── App.js                    # Main component that handles routing and layout
+├── index.js                  # Entry point of the app
+└── tailwind.config.js        # TailwindCSS configuration (if you're using Tailwind)
