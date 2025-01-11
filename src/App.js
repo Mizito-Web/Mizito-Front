@@ -1,4 +1,3 @@
-// App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
@@ -12,7 +11,7 @@ import AuthLayout from './layouts/AuthLayout';
 
 const App = () => {
     return (
-        <Router>
+
             <Routes>
                 {/* Auth Pages (Login, Register) */}
                 <Route element={<AuthLayout />}>
@@ -28,7 +27,7 @@ const App = () => {
                     <Route path="/profile" element={<Profile />} />
                 </Route>
             </Routes>
-        </Router>
+
     );
 };
 

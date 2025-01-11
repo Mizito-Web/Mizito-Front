@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import TaskSummary from '../components/Dashboard/TaskSummary';
 import ActivityFeed from '../components/Dashboard/ActivityFeed';
-import { getTasks, getActivities } from '../services/projectService'; // Assuming services are set up
-
+import { getTasks } from '../services/taskService'; // Assuming services are set up
+import { getActivities } from '../services/activityService';
 const Dashboard = () => {
     const [tasks, setTasks] = useState([]);
     const [activities, setActivities] = useState([]);

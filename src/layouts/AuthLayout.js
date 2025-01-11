@@ -1,14 +1,12 @@
-// layouts/AuthLayout.js
 import React from 'react';
-import Navbar from '../components/Layout/Navbar';  // Optional, if you want to show Navbar in Auth pages
+import { Outlet } from 'react-router-dom'; // Import Outlet
 
-const AuthLayout = ({ children }) => {
+const AuthLayout = () => {
     return (
-        <div className="auth-layout flex flex-col min-h-screen">
-            <Navbar /> {/* Optionally include navbar in auth pages */}
-            <main className="flex-1 flex justify-center items-center p-6">
-                <div className="max-w-md w-full bg-white shadow-md p-8 rounded-lg">
-                    {children}
+        <div className="auth-layout flex flex-col min-h-screen bg-white-100">
+            <main className="flex-1 flex justify-center items-center p-6 overflow-auto">
+                <div className="max-w-lg w-full bg-white shadow-md p-8 rounded-lg">
+                    <Outlet /> {/* This renders the child route */}
                 </div>
             </main>
         </div>
