@@ -12,7 +12,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <div className="sidebar bg-orange-500 text-white h-screen p-4">
+        <div className="sidebar bg-orange-500 text-white h-100% sticky p-4">
             <h1 className="text-2xl font-bold mb-6">Project Manager</h1>
             <ul className="space-y-4">
                 {menuItems.map((item, index) => (

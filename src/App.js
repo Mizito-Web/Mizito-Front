@@ -8,6 +8,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MainLayout from './layouts/mainLayout';
 import AuthLayout from './layouts/AuthLayout';
+import NewProject from './components/Projects/NewProject';
+import ProjectDetails from './components/Projects/ProjectDetails';
+import ProjectPage from './pages/ProjectPage';
 
 const App = () => {
     return (
@@ -21,8 +24,13 @@ const App = () => {
 
                 {/* Main Pages (Dashboard, Projects, Tasks, Profile) */}
                 <Route element={<MainLayout />}>
+
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/projects" element={<Projects />} />
+                    <Route path="/projects/new" element={<NewProject />} />
+                  
+                    <Route path="/projects/:id" element={<ProjectPage />} />
+
                     <Route path="/tasks" element={<Tasks />} />
                     <Route path="/profile" element={<Profile />} />
                 </Route>
