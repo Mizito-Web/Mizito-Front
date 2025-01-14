@@ -14,6 +14,7 @@ const Dashboard = () => {
   });
 
   // Project Progress State
+  
   const [projects, setProjects] = useState([
     {
       id: 1,

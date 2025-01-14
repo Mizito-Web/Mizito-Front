@@ -1,4 +1,3 @@
-// src/components/Dashboard/TaskCard.js
 import React from 'react';
 
 // Helper function to truncate text
