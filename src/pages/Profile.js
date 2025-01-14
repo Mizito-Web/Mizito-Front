@@ -3,7 +3,17 @@ import ProfileInfo from '../components/Profile/ProfileInfo';
 import EditProfileForm from '../components/Profile/EditProfileForm';
 import ChangePasswordForm from '../components/Profile/ChangePasswordForm';
 
-const Profile = ({ user }) => {
+const Profile = () => {
+    // Mock user profile
+    const mockUser = {
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        avatar: '/default-avatar.png', // Default avatar
+        phone: '+123456789',
+        bio: 'This is a mock bio. Edit me!',
+    };
+
+    const [user, setUser] = useState(mockUser); // Initialize state with mock data
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
 
@@ -11,14 +21,13 @@ const Profile = ({ user }) => {
     const handleChangePassword = () => setIsChangingPassword(true);
 
     const handleSaveProfile = (updatedProfile) => {
-        // Save the updated profile data (e.g., API call)
-        console.log('Updated profile:', updatedProfile);
+        console.log('Saving updated profile:', updatedProfile);
+        setUser(updatedProfile); // Update local state with new profile
         setIsEditing(false);
     };
 
     const handleSavePassword = (passwordData) => {
-        // Save the new password (e.g., API call)
-        console.log('Updated password:', passwordData);
+        console.log('Saving new password:', passwordData); // Simulate saving password
         setIsChangingPassword(false);
     };
 
@@ -28,10 +37,11 @@ const Profile = ({ user }) => {
     };
 
     return (
-        <div className="profile p-6">
+        <div className="profile-page p-6 bg-gray-100 min-h-screen">
             {!isEditing && !isChangingPassword && (
-                <ProfileInfo user={user} onEdit={handleEditProfile} />
+                <ProfileInfo user={user} onSave={handleSaveProfile} />
             )}
+
             {isEditing && (
                 <EditProfileForm
                     user={user}
@@ -39,8 +49,12 @@ const Profile = ({ user }) => {
                     onCancel={handleCancel}
                 />
             )}
+
             {isChangingPassword && (
-                <ChangePasswordForm onSave={handleSavePassword} onCancel={handleCancel} />
+                <ChangePasswordForm
+                    onSave={handleSavePassword}
+                    onCancel={handleCancel}
+                />
             )}
         </div>
     );

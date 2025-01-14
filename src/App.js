@@ -11,7 +11,7 @@ import AuthLayout from './layouts/AuthLayout';
 import NewProject from './components/Projects/NewProject';
 import ProjectDetails from './components/Projects/ProjectDetails';
 import ProjectPage from './pages/ProjectPage';
-
+import Chat from './pages/Chat';
 const App = () => {
     return (
 
@@ -30,7 +30,7 @@ const App = () => {
                     <Route path="/projects/new" element={<NewProject />} />
                   
                     <Route path="/projects/:id" element={<ProjectPage />} />
-
+                    <Route path="/chat" element={<Chat />}/>
                     <Route path="/tasks" element={<Tasks />} />
                     <Route path="/profile" element={<Profile />} />
                 </Route>

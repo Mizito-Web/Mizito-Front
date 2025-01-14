@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import ProfileInfo from './ProfileInfo'; 
+import ProfileInfo from './ProfileInfo';
 import EditProfileForm from './EditProfileForm';
 import ChangePasswordForm from './ChangePasswordForm';
 
-const ProfilePage = ({ user }) => {
+const ProfilePage = () => {
+    // Mock user profile
+    const mockUser = {
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        avatar: '/default-avatar.png', // Default avatar
+        phone: '+123456789',
+        bio: 'This is a mock bio. Edit me!',
+    };
+
+    const [user, setUser] = useState(mockUser); // Initialize state with mock data
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
 
@@ -11,14 +21,13 @@ const ProfilePage = ({ user }) => {
     const handleChangePassword = () => setIsChangingPassword(true);
 
     const handleSaveProfile = (updatedProfile) => {
-        // Call API to save updated profile
         console.log('Saving updated profile:', updatedProfile);
+        setUser(updatedProfile); // Update local state with new profile
         setIsEditing(false);
     };
 
     const handleSavePassword = (passwordData) => {
-        // Call API to change the password
-        console.log('Saving new password:', passwordData);
+        console.log('Saving new password:', passwordData); // Simulate saving password
         setIsChangingPassword(false);
     };
 
@@ -28,13 +37,11 @@ const ProfilePage = ({ user }) => {
     };
 
     return (
-        <div className="profile-page p-6">
-            {/* Conditional rendering: show ProfileInfo when not editing or changing password */}
+        <div className="profile-page p-6 bg-gray-100 min-h-screen">
             {!isEditing && !isChangingPassword && (
-                <ProfileInfo user={user} onEdit={handleEditProfile} />
+                <ProfileInfo user={user} onSave={handleSaveProfile} />
             )}
-            
-            {/* Show EditProfileForm when editing */}
+
             {isEditing && (
                 <EditProfileForm
                     user={user}
@@ -43,7 +50,6 @@ const ProfilePage = ({ user }) => {
                 />
             )}
 
-            {/* Show ChangePasswordForm when changing password */}
             {isChangingPassword && (
                 <ChangePasswordForm
                     onSave={handleSavePassword}
