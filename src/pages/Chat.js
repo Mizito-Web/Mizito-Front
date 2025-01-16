@@ -1,38 +1,85 @@
-import React, { useState } from 'react';
-import ChatGroupList from '../components/Chat/ChatGroupList'; // Component for group list
-import ChatWindow from '../components/Chat/ChatWindow'; // Component for chat window
+import React, { useState, useEffect } from 'react';
+import ChatGroupList from '../components/Chat/ChatGroupList';
+import ChatWindow from '../components/Chat/ChatWindow';
+import { fetchGroups, sendMessageToBackend, addGroupToBackend } from '../services/apiClient'; // Backend service
+import { connectWebSocket } from './utils/websocket'; // WebSocket utility
 
 const Chat = () => {
-  const [groups, setGroups] = useState([
-    { id: 1, name: 'دستیار میزیتو', isOnline: true, messages: [] },
-    { id: 2, name: 'تیم پروژه A', isOnline: false, messages: [] },
-  ]); // Mock groups data
-  const [selectedGroupId, setSelectedGroupId] = useState(1); // Default selected group
+  const [groups, setGroups] = useState([]);
+  const [selectedGroupId, setSelectedGroupId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // WebSocket connection
+  useEffect(() => {
+    const ws = connectWebSocket((newMessage) => {
+      setGroups((prevGroups) =>
+        prevGroups.map((group) =>
+          group.id === newMessage.groupId
+            ? { ...group, messages: [...group.messages, newMessage] }
+            : group
+        )
+      );
+    });
+
+    return () => ws.close(); // Clean up WebSocket on component unmount
+  }, []);
+
+  // Fetch groups from backend on mount
+  useEffect(() => {
+    const loadGroups = async () => {
+      try {
+        const data = await fetchGroups();
+        setGroups(data);
+      } catch (err) {
+        setError('Failed to load groups. Please try again later.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGroups();
+  }, []);
 
   // Add a new group
-  const handleAddGroup = () => {
-    const newGroup = {
-      id: groups.length + 1,
-      name: `گروه جدید ${groups.length + 1}`,
-      isOnline: false,
-      messages: [],
-    };
-    setGroups([...groups, newGroup]);
+  const handleAddGroup = async () => {
+    try {
+      const newGroup = await addGroupToBackend(`New Group ${groups.length + 1}`);
+      setGroups([...groups, newGroup]);
+    } catch (err) {
+      setError('Failed to add group. Please try again.');
+      console.error(err);
+    }
   };
 
-  // Handle sending a new message
-  const handleSendMessage = (groupId, message) => {
-    setGroups((prevGroups) =>
-      prevGroups.map((group) =>
-        group.id === groupId
-          ? { ...group, messages: [...group.messages, message] }
-          : group
-      )
-    );
+  // Send a new message
+  const handleSendMessage = async (groupId, message) => {
+    try {
+      const newMessage = await sendMessageToBackend(groupId, message);
+      setGroups((prevGroups) =>
+        prevGroups.map((group) =>
+          group.id === groupId
+            ? { ...group, messages: [...group.messages, newMessage] }
+            : group
+        )
+      );
+    } catch (err) {
+      setError('Failed to send message. Please try again.');
+      console.error(err);
+    }
   };
 
   // Get selected group
   const selectedGroup = groups.find((group) => group.id === selectedGroupId);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-full">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center h-full text-red-500">{error}</div>;
+  }
 
   return (
     <div className="flex h-full">
@@ -59,9 +106,7 @@ const Chat = () => {
         {selectedGroup ? (
           <ChatWindow
             group={selectedGroup}
-            onSendMessage={(message) =>
-              handleSendMessage(selectedGroupId, message)
-            }
+            onSendMessage={(message) => handleSendMessage(selectedGroupId, message)}
           />
         ) : (
           <div className="flex justify-center items-center h-full text-gray-500">

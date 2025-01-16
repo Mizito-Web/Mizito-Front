@@ -4,6 +4,8 @@ import ProjectTasks from '../components/Projects/ProjectTasks';
 import ProjectCalendar from '../components/Projects/ProjectCalendar';
 import ProjectBoard from '../components/Projects/ProjectBoard';
 import GroupChat from '../components/Chat/GroupChat';
+
+
 const ProjectPage = () => {
   const { id } = useParams(); // Project ID from URL
   const [activeTab, setActiveTab] = useState('group'); // Default to Group Chat tab

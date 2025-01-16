@@ -8,7 +8,7 @@ const ProjectCard = ({ project, onClick }) => {
     >
       {/* Project Header */}
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">{project.name}</h3>
+        <h3 className="text-lg font-semibold text-gray-800">{project.name}</h3>
         <span className="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-lg">
           {project.type || 'General Project'}
         </span>

@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../services/authService'; // Replace with your auth service logic
+import { login } from '../services/apiClient';
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard'); // Redirect to dashboard if token exists
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,6 +23,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate fields
     if (!formData.username || !formData.password) {
       setError('Please fill in all fields.');
       return;
@@ -22,11 +32,13 @@ const Login = () => {
 
     setLoading(true);
     setError(''); // Clear any previous errors
+
     try {
-      await login(formData); // Replace with actual login API call
+      await login(formData); // Call the login API
       navigate('/dashboard'); // Redirect to dashboard on successful login
     } catch (err) {
-      setError('Invalid username or password. Please try again.');
+      const errorMessage = err.response?.data?.message || 'Invalid username or password.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -55,6 +67,7 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your username"
               className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+              disabled={loading} // Disable during loading
             />
           </div>
 
@@ -71,6 +84,7 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your password"
               className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+              disabled={loading} // Disable during loading
             />
           </div>
 
