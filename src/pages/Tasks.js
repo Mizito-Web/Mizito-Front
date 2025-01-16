@@ -1,54 +1,50 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import TaskList from '../components/Tasks/TaskList'; // Task list for tasks display
-// import { getTasks } from '../services/taskService'; // Uncomment when backend is implemented
 import TaskForm from '../components/Tasks/TaskForm';
+import { getTasks, createTask } from '../services/apiClient'; // Import API functions
+
 const Tasks = () => {
   const [tasks, setTasks] = useState([]); // Task data
-  const [filter, setFilter] = useState('all'); // Task filter: 'all', 'done', 'undone'
   const [showTaskForm, setShowTaskForm] = useState(false); // Show/Hide form
+  const location = useLocation(); // Get query params from URL
+  const query = new URLSearchParams(location.search);
+  const filter = query.get('filter') || 'all'; // Read filter from URL or default to 'all'
 
   useEffect(() => {
-    // Mock Data for Tasks
-    const mockTasks = [
-      { id: 1, title: 'دعوت از دوستان و همکاران', done: false, details: 'تنظیم دعوت‌نامه‌ها برای همکاران' },
-      { id: 2, title: 'مشاهده بخش نامه‌ها', done: false, details: 'بررسی نامه‌های رسمی برای ارسال گزارش‌ها' },
-      { id: 3, title: 'مشاهده بخش یادداشت‌ها', done: true, details: 'مشاهده و ویرایش یادداشت‌های شخصی' },
-    ];
-
-    // Simulate API call with mock data
+    // Fetch tasks from the backend
     const fetchTasks = async () => {
-      // const tasksData = await getTasks(); // Uncomment when backend is ready
-      const tasksData = mockTasks; // Use mock data
-      setTasks(tasksData);
+      try {
+        const tasksData = await getTasks(); // Fetch tasks from the backend
+        setTasks(tasksData); // Set tasks in state
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      }
     };
 
     fetchTasks();
   }, []);
 
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-  };
-
-  // Function to mark a task as done or undone
-  const handleMarkDone = (taskId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, done: !task.done } : task
-      )
-    );
-  };
-
   // Function to add a new task
-  const handleAddTask = (newTask) => {
-    setTasks([...tasks, { ...newTask, id: tasks.length + 1, done: false }]);
-    setShowTaskForm(false);
+  const handleAddTask = async (newTask) => {
+    try {
+      const createdTask = await createTask(newTask); // Send task to backend
+      setTasks((prevTasks) => [...prevTasks, createdTask]); // Add to local state
+      setShowTaskForm(false); // Close the form
+    } catch (error) {
+      console.error('Failed to create task:', error);
+      alert('Error creating task.');
+    }
   };
 
-  // Apply filter logic
+  // Apply filter logic based on query parameter
   const filteredTasks = tasks.filter((task) => {
     if (filter === 'done') return task.done;
     if (filter === 'undone') return !task.done;
-    return true; // 'all'
+    if (filter === 'today') return task.isToday;
+    if (filter === 'trackable') return task.isTrackable;
+    if (filter === 'delayed') return task.isDelayed;
+    return true; // Show all tasks by default
   });
 
   return (
@@ -70,12 +66,19 @@ const Tasks = () => {
           <label className="text-gray-600">نمایش:</label>
           <select
             value={filter}
-            onChange={handleFilterChange}
+            onChange={(e) => {
+              const newFilter = e.target.value;
+              const url = newFilter === 'all' ? '/tasks' : `/tasks?filter=${newFilter}`;
+              window.history.pushState({}, '', url); // Update URL without reloading
+            }}
             className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-green-200"
           >
             <option value="all">همه وظایف</option>
             <option value="undone">وظایف انجام نشده</option>
             <option value="done">وظایف انجام شده</option>
+            <option value="today">کارهای امروز</option>
+            <option value="trackable">کارهای قابل پیگیری</option>
+            <option value="delayed">کارهای دارای تأخیر</option>
           </select>
         </div>
       </div>
@@ -90,7 +93,7 @@ const Tasks = () => {
       )}
 
       {/* Task List */}
-      <TaskList tasks={filteredTasks} onMarkDone={handleMarkDone} />
+      <TaskList tasks={filteredTasks} onMarkDone={() => {}} />
     </div>
   );
 };

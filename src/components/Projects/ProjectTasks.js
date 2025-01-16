@@ -17,14 +17,25 @@ const ProjectTasks = () => {
     return true; // 'all'
   });
 
-  // Mark task as done or undone
-  const handleMarkDone = (taskId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, done: !task.done } : task
-      )
-    );
+  const handleMarkDone = async (taskId, currentStatus) => {
+    const newStatus = currentStatus === 'done' ? 'undone' : 'done'; // Toggle status
+  
+    try {
+      // Update in backend
+      await updateTaskStatus(taskId, newStatus);
+  
+      // Update in frontend
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
+    } catch (error) {
+      console.error('Failed to update task status:', error);
+      alert('Error updating task status.');
+    }
   };
+  
 
   return (
     <div>

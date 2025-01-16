@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { updateTaskStatus } from '../../services/apiClient';
 
 const ItemType = {
   TASK: 'task',
@@ -99,140 +100,31 @@ const ProjectBoard = () => {
     },
   ]);
 
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [newTaskDescription, setNewTaskDescription] = useState('');
-  const [showTaskForm, setShowTaskForm] = useState(false);
-  const [newListName, setNewListName] = useState('');
-  const [showListForm, setShowListForm] = useState(false);
-
-  const moveTask = (draggedItem, targetListId, targetIndex) => {
+  const moveTask = async (draggedItem, targetListId, targetIndex) => {
     const sourceList = lists.find((list) => list.id === draggedItem.listId);
     const targetList = lists.find((list) => list.id === targetListId);
 
     const [movedTask] = sourceList.tasks.splice(draggedItem.index, 1);
-
     targetList.tasks.splice(targetIndex, 0, movedTask);
 
     setLists([...lists]);
-  };
 
-  const handleCreateList = () => {
-    if (newListName.trim() === '') return;
-
-    const newList = {
-      id: `list-${Date.now()}`,
-      name: newListName,
-      tasks: [],
-    };
-
-    setLists([...lists, newList]);
-    setNewListName('');
-    setShowListForm(false);
-  };
-
-  const handleCreateTask = () => {
-    if (newTaskTitle.trim() === '') {
-      alert('Task title cannot be empty.');
-      return;
+    // Notify the backend if the task is moved to "Completed"
+    if (targetListId === 'completed') {
+      try {
+        await updateTaskStatus(movedTask.id, 'done'); // Update status to 'done'
+        console.log(`Task ${movedTask.id} marked as done.`);
+      } catch (error) {
+        console.error('Error updating task status:', error);
+        alert('Failed to update task status.');
+      }
     }
-
-    const undoneList = lists.find((list) => list.id === 'undone');
-    if (!undoneList) {
-      alert('No "برای انجام" (Undone) list found!');
-      return;
-    }
-
-    const newTask = {
-      id: `task-${Date.now()}`,
-      title: newTaskTitle,
-      description: newTaskDescription || 'بدون توضیحات',
-    };
-
-    undoneList.tasks.push(newTask);
-    setLists([...lists]);
-    setNewTaskTitle('');
-    setNewTaskDescription('');
-    setShowTaskForm(false);
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Project Board</h1>
-
-        {/* Task Creation Form */}
-        {showTaskForm ? (
-          <div className="mb-4 flex flex-col gap-2">
-            <input
-              type="text"
-              placeholder="عنوان وظیفه"
-              value={newTaskTitle}
-              onChange={(e) => setNewTaskTitle(e.target.value)}
-              className="p-2 border rounded"
-            />
-            <textarea
-              placeholder="توضیحات وظیفه"
-              value={newTaskDescription}
-              onChange={(e) => setNewTaskDescription(e.target.value)}
-              className="p-2 border rounded"
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={handleCreateTask}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                ذخیره
-              </button>
-              <button
-                onClick={() => setShowTaskForm(false)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                انصراف
-              </button>
-            </div>
-          </div>
-        ) : (
-          <button
-            onClick={() => setShowTaskForm(true)}
-            className="px-4 py-2 mr-4 bg-teal-500 text-white rounded hover:bg-teal-600 mb-4"
-          >
-            وظیفه جدید
-          </button>
-        )}
-
-        {/* List Creation Form */}
-        {showListForm ? (
-          <div className="mb-4 flex gap-2">
-            <input
-              type="text"
-              placeholder="نام لیست جدید"
-              value={newListName}
-              onChange={(e) => setNewListName(e.target.value)}
-              className="p-2 border rounded"
-            />
-            <button
-              onClick={handleCreateList}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              ذخیره
-            </button>
-            <button
-              onClick={() => setShowListForm(false)}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              انصراف
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setShowListForm(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            افزودن لیست جدید
-          </button>
-        )}
-
-        {/* Drag and Drop Lists */}
         <div className="flex gap-4 overflow-auto">
           {lists.map((list) => (
             <List

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProjectCard from '../components/Projects/ProjectCard'; // ProjectCard component
-import { getProjects } from '../services/projectService'; // Fetch projects
+import { getProjects } from '../services/apiClient'; // Fetch projects
 
 
 const Projects = () => {
