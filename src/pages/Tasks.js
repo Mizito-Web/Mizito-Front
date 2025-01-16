@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import TaskList from '../components/Tasks/TaskList'; // Task list for tasks display
 import TaskForm from '../components/Tasks/TaskForm';
-import { getTasks, createTask } from '../services/apiClient'; // Import API functions
+import { getTasks, updateTaskStatus } from '../services/apiClient'; // Import API functions
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]); // Task data
@@ -25,16 +25,30 @@ const Tasks = () => {
     fetchTasks();
   }, []);
 
-  // Function to add a new task
-  const handleAddTask = async (newTask) => {
+  // Function to mark a task as done or undone
+  const handleMarkDone = async (taskId, currentStatus) => {
+    const newStatus = currentStatus ? 'undone' : 'done'; // Toggle status
+
     try {
-      const createdTask = await createTask(newTask); // Send task to backend
-      setTasks((prevTasks) => [...prevTasks, createdTask]); // Add to local state
-      setShowTaskForm(false); // Close the form
+      // Update status in backend
+      await updateTaskStatus(taskId, newStatus);
+
+      // Update status in frontend
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, done: !task.done } : task
+        )
+      );
     } catch (error) {
-      console.error('Failed to create task:', error);
-      alert('Error creating task.');
+      console.error('Failed to update task status:', error);
+      alert('Error updating task status.');
     }
+  };
+
+  // Function to add a new task
+  const handleAddTask = (newTask) => {
+    setTasks([...tasks, { ...newTask, id: tasks.length + 1, done: false }]);
+    setShowTaskForm(false);
   };
 
   // Apply filter logic based on query parameter
@@ -93,7 +107,7 @@ const Tasks = () => {
       )}
 
       {/* Task List */}
-      <TaskList tasks={filteredTasks} onMarkDone={() => {}} />
+      <TaskList tasks={filteredTasks} onMarkDone={handleMarkDone} />
     </div>
   );
 };

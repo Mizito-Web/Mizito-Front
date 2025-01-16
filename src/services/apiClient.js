@@ -30,37 +30,7 @@ export const getDashboards = async () => {
   return response.data;
 };
 
-// Login function
-export const login = async (credentials) => {
-  const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
-  
-  // Save the token to local storage
-  localStorage.setItem('token', response.data.token);
 
-  return response.data;
-};
-
-// Logout function
-export const logout = () => {
-  localStorage.removeItem('token'); // Clear token on logout
-};
-
-// Get token function
-export const getToken = () => {
-  return localStorage.getItem('token');
-};
-
-
-// Register function
-export const register = async (formData) => {
-    const response = await axios.post(`${API_BASE_URL}/auth/register`, formData);
-    return response.data;
-  };
-
-  export const createProject = async (projectData) => {
-    const response = await axios.post(API_BASE_URL, projectData);
-    return response.data;
-  };
 
 
 export const updateUserProfile = async (profileData) => {
@@ -188,8 +158,6 @@ export const fetchGroups = async () => {
   };
 
   
-
-
   export const getTaskAnalytics = async () => {
     const response = await axios.get(`${API_BASE_URL}/analytics/tasks`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -204,7 +172,6 @@ export const fetchGroups = async () => {
     return response.data;
   };
 
-  
 
 export const createDashboard = async (dashboardData) => {
     const response = await axios.post(`${API_BASE_URL}/dashboards`, dashboardData, {
@@ -213,3 +180,41 @@ export const createDashboard = async (dashboardData) => {
     return response.data;
   };
   
+
+
+  // Login function
+export const login = async (credentials) => {
+    const json = JSON.stringify(credentials)
+  const response = await axios.post(`${API_BASE_URL}/auth/login`, json);
+  
+  // Save the token to local storage
+  localStorage.setItem('token', response.data.access_token);
+
+  return response.data;
+};
+
+// Logout function
+export const logout = () => {
+  localStorage.removeItem('token'); // Clear token on logout
+};
+
+// Get token function
+export const getToken = () => {
+  return localStorage.getItem('token');
+};
+
+
+// Register function
+export const register = async (formData) => {
+    const json = JSON.stringify(formData)
+    const response = await axios.post(`${API_BASE_URL}/auth/signup`,
+      json
+    );
+    const res2 = await axios.post(`${API_BASE_URL}/auth/login`, json);
+    return res2.data;
+  };
+
+  export const createProject = async (projectData) => {
+    const response = await axios.post(API_BASE_URL, projectData);
+    return response.data;
+  };

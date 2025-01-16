@@ -76,6 +76,48 @@ const Register = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+        <label
+          htmlFor="firstname"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          First name
+        </label>
+        <input
+          type="text"
+          id="firstname"
+          name="firstname"
+          value={formData.firstname}
+          onChange={handleChange}
+          placeholder="Enter your firstname"
+          className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+          disabled={loading}
+        />
+        {errors.firstname && (
+          <p className="text-red-500 text-sm">{errors.firstname}</p>
+        )}
+        <div>
+        <label
+          htmlFor="lastname"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          last name
+        </label>
+        <input
+          type="text"
+          id="lastname"
+          name="lastname"
+          value={formData.lastname}
+          onChange={handleChange}
+          placeholder="Enter your lastname"
+          className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+          disabled={loading}
+        />
+        {errors.lastname && (
+          <p className="text-red-500 text-sm">{errors.lastname}</p>
+        )}
+      </div>
+      </div>
           {/* Username Field */}
           <div>
             <label
